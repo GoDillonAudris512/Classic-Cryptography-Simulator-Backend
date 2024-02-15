@@ -7,12 +7,16 @@ import (
 )
 
 func Router() *mux.Router {
-	// General Endpoint
+	// General Endpoints
 	router := mux.NewRouter()
 	router.HandleFunc("/api", middleware.MainHandler).Methods("GET")
 
-	// Functional Endpoint
-	// apiRouter := router.PathPrefix("/api").Subrouter()
+	// Functional Endpoints
+	apiRouter := router.PathPrefix("/api").Subrouter()
+
+	// Vigenere Encryption
+	apiRouter.HandleFunc("/vigenere/encrypt", middleware.EncryptVigenere).Methods("POST")
+	apiRouter.HandleFunc("/vigenere/decrypt", middleware.DecryptVigenere).Methods("POST")
 
 	return router
 }
