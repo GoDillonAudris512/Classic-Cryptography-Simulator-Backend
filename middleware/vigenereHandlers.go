@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"net/http"
 
@@ -25,49 +24,52 @@ func BuildKeyText(text string, key string) string {
 	}
 }
 
-func EncryptVigenere(response http.ResponseWriter, request *http.Request) {
-	response.Header().Set("Content-Type", "application/json")
+func HandleVigenere(response http.ResponseWriter, request *http.Request) {
+	var reqToken model.VigenereRequestToken
+	decoder := json.NewDecoder(request.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&reqToken)
 
-	var encryptReqToken model.EncryptRequestToken
-	err := json.NewDecoder(request.Body).Decode(&encryptReqToken)
 	if err != nil {
 		http.Error(response, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	keyText := BuildKeyText(encryptReqToken.PlainText, encryptReqToken.Key)
+	keyText := BuildKeyText(reqToken.Input, reqToken.Key)
+
+	if reqToken.Encrypt {
+		EncryptVigenere(reqToken.Input, keyText, response)
+	} else {
+		DecryptVigenere(reqToken.Input, keyText, response)
+	}
+}
+
+func EncryptVigenere(input string, keyText string, response http.ResponseWriter) {
+	response.Header().Set("Content-Type", "application/json")
 
 	cipherText := ""
-	for i := 0; i < len(encryptReqToken.PlainText); i++ {
-		token1 := alphabetToNumber[encryptReqToken.PlainText[i]]
+	for i := 0; i < len(input); i++ {
+		token1 := alphabetToNumber[input[i]]
 		token2 := alphabetToNumber[keyText[i]]
-		
+
 		cipherToken := numberToAlphabet[(token1+token2)%26]
 		cipherText += string(cipherToken)
 	}
 
-	var encryptResToken model.EncryptResponseToken
-	encryptResToken.CipherText = base64.StdEncoding.EncodeToString([]byte(cipherText))
+	var resToken model.VigenereResponseToken
+	resToken.Success = true
+	resToken.Output = cipherText
 
 	response.WriteHeader(http.StatusOK)
-	json.NewEncoder(response).Encode(encryptResToken)
+	json.NewEncoder(response).Encode(resToken)
 }
 
-func DecryptVigenere(response http.ResponseWriter, request *http.Request) {
+func DecryptVigenere(input string, keyText string, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
-	var decryptReqToken model.DecryptRequestToken
-	err := json.NewDecoder(request.Body).Decode(&decryptReqToken)
-	if err != nil {
-		http.Error(response, "Invalid request payload", http.StatusBadRequest)
-		return
-	}
-
-	keyText := BuildKeyText(decryptReqToken.CipherText, decryptReqToken.Key)
-
 	plainText := ""
-	for i := 0; i < len(decryptReqToken.CipherText); i++ {
-		token1 := alphabetToNumber[decryptReqToken.CipherText[i]]
+	for i := 0; i < len(input); i++ {
+		token1 := alphabetToNumber[input[i]]
 		token2 := alphabetToNumber[keyText[i]]
 
 		var cipherToken uint8
@@ -79,9 +81,10 @@ func DecryptVigenere(response http.ResponseWriter, request *http.Request) {
 		plainText += string(cipherToken)
 	}
 
-	var decryptResToken model.DecryptResponseToken
-	decryptResToken.PlainText = base64.StdEncoding.EncodeToString([]byte(plainText))
+	var resToken model.VigenereResponseToken
+	resToken.Success = true
+	resToken.Output = plainText
 
 	response.WriteHeader(http.StatusOK)
-	json.NewEncoder(response).Encode(decryptResToken)
+	json.NewEncoder(response).Encode(resToken)
 }
