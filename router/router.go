@@ -19,6 +19,9 @@ func Router() *mux.Router {
 
 	// Auto-Key Vigenere Cipher
 	apiRouter.HandleFunc("/auto-vigenere", middleware.HandleAutoVigenere).Methods("POST")
-	
+
+	// Playfair Cipher
+	apiRouter.HandleFunc("/playfair", middleware.HandlePlayfair).Methods("POST")
+
 	return router
 }
