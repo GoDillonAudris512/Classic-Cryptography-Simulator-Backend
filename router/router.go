@@ -14,9 +14,11 @@ func Router() *mux.Router {
 	// Functional Endpoints
 	apiRouter := router.PathPrefix("/api").Subrouter()
 
-	// Vigenere Encryption
-	apiRouter.HandleFunc("/vigenere/encrypt", middleware.EncryptVigenere).Methods("POST")
-	apiRouter.HandleFunc("/vigenere/decrypt", middleware.DecryptVigenere).Methods("POST")
+	// Standard Vigenere Cipher
+	apiRouter.HandleFunc("/vigenere", middleware.HandleVigenere).Methods("POST")
 
+	// Auto-Key Vigenere Cipher
+	apiRouter.HandleFunc("/auto-vigenere", middleware.HandleAutoVigenere).Methods("POST")
+	
 	return router
 }
