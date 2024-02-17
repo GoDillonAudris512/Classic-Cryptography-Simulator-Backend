@@ -43,7 +43,7 @@ func KeywordToMapPair(keyword string) model.MapPair {
 	return mapPair
 }
 
-func ProcessInput(input string) []model.Bigram {
+func ProcessPlayfairInput(input string) []model.Bigram {
 	processed := strings.Map(func(r rune) rune {
 		if r == 'J' {
 			return 'I'
@@ -103,7 +103,7 @@ func EncryptPlayfair(input string, key string, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
 	mapPair := KeywordToMapPair(key)
-	bigrams := ProcessInput(input)
+	bigrams := ProcessPlayfairInput(input)
 
 	cipherText := ""
 	for _, bigram := range bigrams {
@@ -141,7 +141,7 @@ func DecryptPlayfair(input string, key string, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
 	mapPair := KeywordToMapPair(key)
-	bigrams := ProcessInput(input)
+	bigrams := ProcessPlayfairInput(input)
 
 	plainText := ""
 	for _, bigram := range bigrams {
