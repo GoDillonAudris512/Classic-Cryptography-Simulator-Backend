@@ -49,12 +49,7 @@ func DecryptAutoVigenere(input string, key string, response http.ResponseWriter)
 		token1 := alphabetToNumber[input[i]]
 		token2 := alphabetToNumber[keyText[i]]
 
-		var cipherToken uint8
-		if token1-token2 < 0 {
-			cipherToken = numberToAlphabet[(token1-token2+26)%26]
-		} else {
-			cipherToken = numberToAlphabet[(token1-token2)%26]
-		}
+		cipherToken := numberToAlphabet[(token1-token2+26)%26]
 		plainText += string(cipherToken)
 		keyText += string(cipherToken)
 	}
