@@ -32,6 +32,18 @@ func HandleAffine(response http.ResponseWriter, request *http.Request) {
 
 	gcd, x, _ := ExtendedEuclidean(reqToken.Slope, 26)
 
+	if gcd != 1 {
+		response.Header().Set("Content-Type", "application/json")
+
+		var resToken model.AffineResponseToken
+		resToken.Success = false
+		resToken.Output = "Unable to process because the value of slope is not coprime to the size of alphabet (26)"
+
+		response.WriteHeader(http.StatusOK)
+		json.NewEncoder(response).Encode(resToken)
+		return
+	}
+
 	if reqToken.Encrypt {
 		EncryptAffine(reqToken.Input, reqToken.Slope, reqToken.Intercept, gcd, x, response)
 	} else {
@@ -41,16 +53,6 @@ func HandleAffine(response http.ResponseWriter, request *http.Request) {
 
 func EncryptAffine(input string, slope int, intercept int, gcd int, x int, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
-
-	if gcd != 1 {
-		var resToken model.AffineResponseToken
-		resToken.Success = false
-		resToken.Output = "Unable to encrypt because the value of slope is not coprime to the size of alphabet (26)"
-
-		response.WriteHeader(http.StatusOK)
-		json.NewEncoder(response).Encode(resToken)
-		return
-	}
 
 	cipherText := ""
 	for _, char := range input {
@@ -70,16 +72,6 @@ func EncryptAffine(input string, slope int, intercept int, gcd int, x int, respo
 
 func DecryptAffine(input string, slope int, intercept int, gcd int, x int, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
-
-	if gcd != 1 {
-		var resToken model.AffineResponseToken
-		resToken.Success = false
-		resToken.Output = "Unable to encrypt because the value of slope is not coprime to the size of alphabet (26)"
-
-		response.WriteHeader(http.StatusOK)
-		json.NewEncoder(response).Encode(resToken)
-		return
-	}
 
 	slopeInverse := (x + 26) % 26
 
