@@ -23,5 +23,8 @@ func Router() *mux.Router {
 	// Playfair Cipher
 	apiRouter.HandleFunc("/playfair", middleware.HandlePlayfair).Methods("POST")
 
+	// Affine Cipher
+	apiRouter.HandleFunc("/affine", middleware.HandleAffine).Methods("POST")
+	
 	return router
 }

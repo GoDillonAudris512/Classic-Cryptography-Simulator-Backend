@@ -24,3 +24,16 @@ type PlayfairResponseToken struct {
 	Output  string 	`json:"output"`
 	Key		string	`json:"key"`
 }
+
+// For Affine Cipher
+type AffineRequestToken struct {
+	Input 		string	`json:"input"`
+	Slope		int 	`json:"slope"`
+	Intercept	int 	`json:"intercept"`
+	Encrypt		bool   	`json:"encrypt"`
+}
+
+type AffineResponseToken struct {
+	Success 	bool   	`json:"success"`
+	Output  	string 	`json:"output"`
+}
