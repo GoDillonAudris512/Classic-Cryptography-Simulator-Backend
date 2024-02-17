@@ -72,8 +72,8 @@ func DecryptVigenere(input string, keyText string, response http.ResponseWriter)
 		token1 := alphabetToNumber[input[i]]
 		token2 := alphabetToNumber[keyText[i]]
 
-		cipherToken := numberToAlphabet[(token1-token2+26)%26]
-		plainText += string(cipherToken)
+		plainToken := numberToAlphabet[(token1-token2+26)%26]
+		plainText += string(plainToken)
 	}
 
 	var resToken model.VigenereResponseToken
