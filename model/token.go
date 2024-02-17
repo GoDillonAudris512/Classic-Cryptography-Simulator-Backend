@@ -12,6 +12,18 @@ type VigenereResponseToken struct {
 	Output  string 	`json:"output"`
 }
 
+// For Extended Vigenere Cipher
+type ExtendedVigenereRequestToken struct {
+	Input   []uint8 `json:"input"`
+	Key     []uint8 `json:"key"`
+	Encrypt bool   	`json:"encrypt"`
+}
+
+type ExtendedVigenereResponseToken struct {
+	Success bool   	`json:"success"`
+	Output  []uint8 `json:"output"`
+}
+
 // For Playfair Cipher
 type PlayfairRequestToken struct {
 	Input 	string	`json:"input"`
