@@ -49,3 +49,15 @@ type AffineResponseToken struct {
 	Success 	bool   	`json:"success"`
 	Output  	string 	`json:"output"`
 }
+
+// For Hill Cipher
+type HillRequestToken struct {
+	Input   string 	`json:"input"`
+	Matrix	[][]int	`json:"matrix"`
+	Encrypt bool   	`json:"encrypt"`
+}
+
+type HillResponseToken struct {
+	Success bool   	`json:"success"`
+	Output  string 	`json:"output"`
+}

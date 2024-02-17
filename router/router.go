@@ -29,5 +29,8 @@ func Router() *mux.Router {
 	// Affine Cipher
 	apiRouter.HandleFunc("/affine", middleware.HandleAffine).Methods("POST")
 
+	// Hill Cipher
+	apiRouter.HandleFunc("/hill", middleware.HandleHill).Methods("POST")
+
 	return router
 }
