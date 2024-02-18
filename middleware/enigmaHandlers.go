@@ -28,6 +28,9 @@ func HandlePlugboardError(response http.ResponseWriter, error string) {
 
 func BuildPlugboard(plugboardText string, response http.ResponseWriter) {
 	substrings := strings.Split(plugboardText, " ")
+	if substrings[len(substrings)-1] == "" {
+		substrings = substrings[:len(substrings)-1]
+	}
 
 	for index, substring := range substrings {
 		if index == 10 {
@@ -49,6 +52,12 @@ func BuildPlugboard(plugboardText string, response http.ResponseWriter) {
 
 		plugboard[uint8(alphabetToNumber[first])] = uint8(alphabetToNumber[second])
 		plugboard[uint8(alphabetToNumber[second])] = uint8(alphabetToNumber[first])
+	}
+
+	for i := uint8(0); i < uint8(26); i++ {
+		if _, ok := plugboard[i]; !ok {
+			plugboard[i] = i
+		}
 	}
 }
 
