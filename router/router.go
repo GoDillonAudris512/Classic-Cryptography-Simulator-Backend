@@ -34,6 +34,9 @@ func Router() *mux.Router {
 
 	// Super Encryption
 	apiRouter.HandleFunc("/super", middleware.HandleSuper).Methods("POST")
-	
+
+	// Enigma Cipher
+	apiRouter.HandleFunc("/enigma", middleware.HandleEnigma).Methods("POST")
+
 	return router
 }

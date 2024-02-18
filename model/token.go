@@ -74,3 +74,20 @@ type SuperResponseToken struct {
 	Success bool    `json:"success"`
 	Output  []uint8 `json:"output"`
 }
+
+// For Enigma Cipher
+type EnigmaRequestToken struct {
+	Input   	string 	`json:"input"`
+	Position1	int		`json:"pos1"`
+	Position2	int		`json:"pos2"`
+	Position3	int 	`json:"pos3"`
+	Order1		int		`json:"order1"`
+	Order2		int		`json:"order2"`
+	Order3		int		`json:"order3"`
+	Plugboard	string	`json:"plugboard"`
+}
+
+type EnigmaResponseToken struct {
+	Success bool   	`json:"success"`
+	Output  string 	`json:"output"`
+}
