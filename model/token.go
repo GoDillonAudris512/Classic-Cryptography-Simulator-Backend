@@ -66,7 +66,7 @@ type HillResponseToken struct {
 type SuperRequestToken struct {
 	Input   []uint8 `json:"input"`
 	Key1    []uint8 `json:"key1"`
-	Key2    []uint8 `json:"key2"`
+	Key2    int		`json:"key2"`
 	Encrypt bool    `json:"encrypt"`
 }
 

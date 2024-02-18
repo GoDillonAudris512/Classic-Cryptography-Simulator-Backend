@@ -2,41 +2,17 @@ package middleware
 
 import (
 	"encoding/json"
-	"net/http"
-	"sort"
 	"math"
+	"net/http"
 
 	"classic-crypt/model"
 )
 
-func BuildColumnarKeyOrder(key []uint8) []int {
-	sorted := key
-	sort.Slice(sorted, func(i, j int) bool {
-		return sorted[i] < sorted[j]
-	})
-
+func BuildColumnarKeyOrder(key int) []int {
 	order := []int{}
-	first := true
-	prevChar := uint8(0)
-	for _, char := range sorted {
-		if first {
-			for i, keyToken := range key {
-				if keyToken == char {
-					order = append(order, i)
-				}
-			}
-			prevChar = char
-			first = false
-		} else {
-			if char != prevChar {
-				for i, keyToken := range key {
-					if keyToken == char {
-						order = append(order, i)
-					}
-				}
-				prevChar = char
-			}
-		}
+
+	for i := 0; i < key; i++ {
+		order = append(order, i)
 	}
 
 	return order
