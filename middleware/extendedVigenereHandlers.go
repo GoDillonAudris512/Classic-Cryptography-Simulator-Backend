@@ -38,23 +38,16 @@ func HandleExtendedVigenere(response http.ResponseWriter, request *http.Request)
 	keyText := BuildExtendedKeyText(reqToken.Input, reqToken.Key)
 
 	if reqToken.Encrypt {
-		EncryptExtendedVigenere(reqToken.Input, keyText, response)
+		HandleEncryptExtendedVigenere(reqToken.Input, keyText, response)
 	} else {
-		DecryptExtendedVigenere(reqToken.Input, keyText, response)
+		HandleDecryptExtendedVigenere(reqToken.Input, keyText, response)
 	}
 }
 
-func EncryptExtendedVigenere(input []uint8, keyText []uint8, response http.ResponseWriter) {
+func HandleEncryptExtendedVigenere(input []uint8, keyText []uint8, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
-	cipherText := []uint8{}
-	for i := 0; i < len(input); i++ {
-		token1 := alphabet256ToNumber[input[i]]
-		token2 := alphabet256ToNumber[keyText[i]]
-
-		cipherToken := numberToAlphabet256[(token1+token2)%256]
-		cipherText = append(cipherText, cipherToken)
-	}
+	cipherText := EncryptExtendedVigenere(input, keyText)
 
 	var resToken model.ExtendedVigenereResponseToken
 	resToken.Success = true
@@ -64,10 +57,36 @@ func EncryptExtendedVigenere(input []uint8, keyText []uint8, response http.Respo
 	json.NewEncoder(response).Encode(resToken)
 }
 
-func DecryptExtendedVigenere(input []uint8, keyText []uint8, response http.ResponseWriter) {
+func EncryptExtendedVigenere(input []uint8, keyText []uint8) []uint8 {
+	cipherText := []uint8{}
+
+	for i := 0; i < len(input); i++ {
+		token1 := alphabet256ToNumber[input[i]]
+		token2 := alphabet256ToNumber[keyText[i]]
+
+		cipherToken := numberToAlphabet256[(token1+token2)%256]
+		cipherText = append(cipherText, cipherToken)
+	}
+
+	return cipherText
+}
+
+func HandleDecryptExtendedVigenere(input []uint8, keyText []uint8, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
+	plainText := DecryptExtendedVigenere(input, keyText)
+
+	var resToken model.ExtendedVigenereResponseToken
+	resToken.Success = true
+	resToken.Output = plainText
+
+	response.WriteHeader(http.StatusOK)
+	json.NewEncoder(response).Encode(resToken)
+}
+
+func DecryptExtendedVigenere(input []uint8, keyText []uint8) []uint8 {
 	plainText := []uint8{}
+
 	for i := 0; i < len(input); i++ {
 		token1 := alphabet256ToNumber[input[i]]
 		token2 := alphabet256ToNumber[keyText[i]]
@@ -76,10 +95,5 @@ func DecryptExtendedVigenere(input []uint8, keyText []uint8, response http.Respo
 		plainText = append(plainText, plainToken)
 	}
 
-	var resToken model.ExtendedVigenereResponseToken
-	resToken.Success = true
-	resToken.Output = plainText
-
-	response.WriteHeader(http.StatusOK)
-	json.NewEncoder(response).Encode(resToken)
+	return plainText
 }
