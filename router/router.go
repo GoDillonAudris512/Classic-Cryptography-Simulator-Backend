@@ -32,5 +32,8 @@ func Router() *mux.Router {
 	// Hill Cipher
 	apiRouter.HandleFunc("/hill", middleware.HandleHill).Methods("POST")
 
+	// Super Encryption
+	apiRouter.HandleFunc("/super", middleware.HandleSuper).Methods("POST")
+	
 	return router
 }

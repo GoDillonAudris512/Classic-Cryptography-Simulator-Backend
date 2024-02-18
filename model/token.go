@@ -61,3 +61,16 @@ type HillResponseToken struct {
 	Success bool   	`json:"success"`
 	Output  string 	`json:"output"`
 }
+
+// For Super Encryption
+type SuperRequestToken struct {
+	Input   []uint8 `json:"input"`
+	Key1    []uint8 `json:"key1"`
+	Key2    []uint8 `json:"key2"`
+	Encrypt bool    `json:"encrypt"`
+}
+
+type SuperResponseToken struct {
+	Success bool    `json:"success"`
+	Output  []uint8 `json:"output"`
+}
