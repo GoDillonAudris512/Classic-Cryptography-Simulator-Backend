@@ -2,21 +2,10 @@ package middleware
 
 import (
 	"encoding/json"
-	"math"
 	"net/http"
 
 	"classic-crypt/model"
 )
-
-func BuildColumnarKeyOrder(key int) []int {
-	order := []int{}
-
-	for i := 0; i < key; i++ {
-		order = append(order, i)
-	}
-
-	return order
-}
 
 func HandleSuper(response http.ResponseWriter, request *http.Request) {
 	var reqToken model.SuperRequestToken
@@ -30,25 +19,24 @@ func HandleSuper(response http.ResponseWriter, request *http.Request) {
 	}
 
 	keyText := BuildExtendedKeyText(reqToken.Input, reqToken.Key1)
-	order := BuildColumnarKeyOrder(reqToken.Key2)
 
 	if reqToken.Encrypt {
-		EncryptSuper(reqToken.Input, keyText, order, response)
+		EncryptSuper(reqToken.Input, keyText, reqToken.Key2, response)
 	} else {
-		DecryptSuper(reqToken.Input, keyText, order, response)
+		DecryptSuper(reqToken.Input, keyText, reqToken.Key2, response)
 	}
 }
 
-func EncryptSuper(input []uint8, keyText []uint8, order []int, response http.ResponseWriter) {
+func EncryptSuper(input []int, keyText []int, order int, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
 	cipherText := EncryptExtendedVigenere(input, keyText)
 
-	processedCipherText := []uint8{}
-	for _, rank := range order {
-		for i, char := range cipherText {
-			if i % len(order) == rank {
-				processedCipherText = append(processedCipherText, char)
+	processedCipherText := []int{}
+	for i := 0; i < order; i++ {
+		for j := 0; j < len(cipherText); j++ {
+			if j % order == i {
+				processedCipherText = append(processedCipherText, cipherText[j])
 			}
 		}
 	}
@@ -61,35 +49,29 @@ func EncryptSuper(input []uint8, keyText []uint8, order []int, response http.Res
 	json.NewEncoder(response).Encode(resToken)
 }
 
-func DecryptSuper(input []uint8, keyText []uint8, order []int, response http.ResponseWriter) {
+func DecryptSuper(input []int, keyText []int, order int, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
-	row := int(math.Ceil(float64(len(input)) / float64(len(order))))
-	matrix := make([][]uint8, row)
-	for i := 0; i < row - 1; i++ {
-		matrix[i] = make([]uint8, len(order))
-	}
-	matrix[row - 1] = make([]uint8, len(input) % len(order))
-	
-	index := 0
-	for _, rank := range order {
-		colSize := 0
-		if rank < len(input) % len(order) {
-			colSize = row
+	cap := len(input) / order
+	copy := input
+	numbers := make([][]int, order)
+	for i := 0; i < order; i++ {
+		if i < len(input) % order {
+			numbers[i] = copy[:(cap+1)]
+			copy = copy[(cap+1):]
 		} else {
-			colSize = row - 1
-		}
-
-		for i := 0; i < colSize; i++ {
-			matrix[i][rank] = input[index]
-			index++
+			numbers[i] = copy[:(cap)]
+			copy = copy[(cap):]
 		}
 	}
 
-	processedPlainText := []uint8{}
-	for i := 0; i < len(matrix); i++ {
-		for j := 0; j < len(matrix[i]); j++ {
-			processedPlainText = append(processedPlainText, matrix[i][j])
+	processedPlainText := []int{}
+	column := 0
+	for i := 0; i < len(input); i++ {
+		if (len(numbers[column]) > 0) {
+			processedPlainText = append(processedPlainText, numbers[column][0])
+			numbers[column] = numbers[column][1:]
+			column = (column + 1) % order
 		}
 	}
 
