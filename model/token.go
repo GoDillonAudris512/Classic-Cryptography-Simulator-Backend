@@ -14,14 +14,14 @@ type VigenereResponseToken struct {
 
 // For Extended Vigenere Cipher
 type ExtendedVigenereRequestToken struct {
-	Input   []uint8 `json:"input"`
-	Key     []uint8 `json:"key"`
+	Input   []int `json:"input"`
+	Key     []int `json:"key"`
 	Encrypt bool   	`json:"encrypt"`
 }
 
 type ExtendedVigenereResponseToken struct {
 	Success bool   	`json:"success"`
-	Output  []uint8 `json:"output"`
+	Output  []int `json:"output"`
 }
 
 // For Playfair Cipher
@@ -64,15 +64,15 @@ type HillResponseToken struct {
 
 // For Super Encryption
 type SuperRequestToken struct {
-	Input   []uint8 `json:"input"`
-	Key1    []uint8 `json:"key1"`
+	Input   []int `json:"input"`
+	Key1    []int `json:"key1"`
 	Key2    int		`json:"key2"`
 	Encrypt bool    `json:"encrypt"`
 }
 
 type SuperResponseToken struct {
 	Success bool    `json:"success"`
-	Output  []uint8 `json:"output"`
+	Output  []int `json:"output"`
 }
 
 // For Enigma Cipher

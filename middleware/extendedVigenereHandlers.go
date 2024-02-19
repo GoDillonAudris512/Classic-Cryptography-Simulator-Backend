@@ -7,7 +7,7 @@ import (
 	"classic-crypt/model"
 )
 
-func BuildExtendedKeyText(text []uint8, key []uint8) []uint8 {
+func BuildExtendedKeyText(text []int, key []int) []int {
 	textLength := len(text)
 	keyLength := len(key)
 
@@ -44,7 +44,7 @@ func HandleExtendedVigenere(response http.ResponseWriter, request *http.Request)
 	}
 }
 
-func HandleEncryptExtendedVigenere(input []uint8, keyText []uint8, response http.ResponseWriter) {
+func HandleEncryptExtendedVigenere(input []int, keyText []int, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
 	cipherText := EncryptExtendedVigenere(input, keyText)
@@ -57,21 +57,21 @@ func HandleEncryptExtendedVigenere(input []uint8, keyText []uint8, response http
 	json.NewEncoder(response).Encode(resToken)
 }
 
-func EncryptExtendedVigenere(input []uint8, keyText []uint8) []uint8 {
-	cipherText := []uint8{}
+func EncryptExtendedVigenere(input []int, keyText []int) []int {
+	cipherText := []int{}
 
 	for i := 0; i < len(input); i++ {
-		token1 := alphabet256ToNumber[input[i]]
-		token2 := alphabet256ToNumber[keyText[i]]
+		token1 := alphabet256ToNumber[uint8(input[i])]
+		token2 := alphabet256ToNumber[uint8(keyText[i])]
 
 		cipherToken := numberToAlphabet256[(token1+token2)%256]
-		cipherText = append(cipherText, cipherToken)
+		cipherText = append(cipherText, int(cipherToken))
 	}
 
 	return cipherText
 }
 
-func HandleDecryptExtendedVigenere(input []uint8, keyText []uint8, response http.ResponseWriter) {
+func HandleDecryptExtendedVigenere(input []int, keyText []int, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 
 	plainText := DecryptExtendedVigenere(input, keyText)
@@ -84,15 +84,15 @@ func HandleDecryptExtendedVigenere(input []uint8, keyText []uint8, response http
 	json.NewEncoder(response).Encode(resToken)
 }
 
-func DecryptExtendedVigenere(input []uint8, keyText []uint8) []uint8 {
-	plainText := []uint8{}
+func DecryptExtendedVigenere(input []int, keyText []int) []int {
+	plainText := []int{}
 
 	for i := 0; i < len(input); i++ {
-		token1 := alphabet256ToNumber[input[i]]
-		token2 := alphabet256ToNumber[keyText[i]]
+		token1 := alphabet256ToNumber[uint8(input[i])]
+		token2 := alphabet256ToNumber[uint8(keyText[i])]
 
 		plainToken := numberToAlphabet256[(token1-token2+256)%256]
-		plainText = append(plainText, plainToken)
+		plainText = append(plainText, int(plainToken))
 	}
 
 	return plainText
