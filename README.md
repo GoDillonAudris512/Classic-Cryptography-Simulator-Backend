@@ -1,5 +1,5 @@
 # 🔐 Classic Cryptography Simulator
-Back-end side of simulator for well-known classic cipher algorithms using Go languange
+> Back-end side of simulator for well-known classic cipher algorithms using Go languange
 
 ## General Information
 This program is created to simulate some popular classic cryptography algorithms built under the web. Dive into the captivating world of classic cryptography with this interactive simulator! Experiment with renowned algorithms like Caesar and Vigenere Ciphers, encrypt messages beyond the alphabet with extended ASCII support, and handle both text snippets and entire files. Decrypt hidden messages, craft your own secret codes, and gain a deeper understanding of this fascinating field. Unleash your inner codebreaker and embark on this intriguing cryptographic journey!
